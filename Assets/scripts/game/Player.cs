@@ -7,6 +7,7 @@ public class Player : MonoBehaviour {
 	private Animator anim;
 	private SpriteRenderer renderer;
    	private float _nextUse = 0.0f;
+	private bool readyToRoll = false;
 	
 	public bool IsCooldownDone{
 		get{
@@ -28,18 +29,22 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		
-
 		if(IsCooldownDone) {
+			readyToRoll = false;
 			if(Input.GetKeyDown(KeyCode.Space)) {
 				anim.Play("Attack");
 				TriggerCooldown(0.1f);
 			}
 			if(CheckRoll()) {
 				anim.Play("Roll");
+				readyToRoll = true;
 				TriggerCooldown(0.7f);
 			} else
 				Walk();
+		}
+
+		if (readyToRoll) {
+			Roll();
 		}
 
 		// Walk();
@@ -101,6 +106,26 @@ public class Player : MonoBehaviour {
 			}
 		} else
 			return false;
+	}
+
+	public void Roll() {
+		var newVec = this.transform.position;
+		if((Input.GetKey(KeyCode.W) && previousKey != KeyCode.S) || previousKey == KeyCode.W) {
+			newVec.y += 1;
+		}
+		if ((Input.GetKey(KeyCode.A) && previousKey != KeyCode.D) || previousKey == KeyCode.A) {
+			renderer.flipX = true;
+			newVec.x -=1;
+		}
+		if ((Input.GetKey(KeyCode.S) && previousKey != KeyCode.W) || previousKey == KeyCode.S) {
+			newVec.y -= 1;
+		}
+		if ((Input.GetKey(KeyCode.D) && previousKey != KeyCode.A) || previousKey == KeyCode.D) {
+			renderer.flipX = false;
+			newVec.x += 1;
+		}
+
+		this.transform.position = Vector2.MoveTowards(transform.position, newVec, 3.5f * Time.deltaTime);
 	}
 
 }
