@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : Observer {
+
+	[Observing("PlayerStore")] int playerLife;
 
 	private Animator anim;
 	private SpriteRenderer renderer;
@@ -67,9 +69,11 @@ public class Player : MonoBehaviour {
 
 		if (Input.GetKey(KeyCode.A)) {
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x - 0.1f, transform.position.y), 2 * Time.deltaTime);
-			renderer.flipX = true;
+			// renderer.flipX = true;
+			transform.localScale = new Vector3(-1, 1, 1);
 		} else if (Input.GetKey(KeyCode.D)) {
-			renderer.flipX = false;
+			// renderer.flipX = false;
+			transform.localScale = new Vector3(1, 1, 1);
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x + 0.1f, transform.position.y), 2 * Time.deltaTime);
 		}
 
@@ -114,18 +118,24 @@ public class Player : MonoBehaviour {
 			newVec.y += 1;
 		}
 		if ((Input.GetKey(KeyCode.A) && previousKey != KeyCode.D) || previousKey == KeyCode.A) {
-			renderer.flipX = true;
+			// renderer.flipX = true;
+			transform.localScale = new Vector3(-1, 1, 1);
 			newVec.x -=1;
 		}
 		if ((Input.GetKey(KeyCode.S) && previousKey != KeyCode.W) || previousKey == KeyCode.S) {
 			newVec.y -= 1;
 		}
 		if ((Input.GetKey(KeyCode.D) && previousKey != KeyCode.A) || previousKey == KeyCode.D) {
-			renderer.flipX = false;
+			// renderer.flipX = false;
+			transform.localScale = new Vector3(1, 1, 1);
 			newVec.x += 1;
 		}
 
 		this.transform.position = Vector2.MoveTowards(transform.position, newVec, 3.5f * Time.deltaTime);
 	}
+
+	void OnCollisionEnter2D(Collision2D coll) {
+        PlayerStore.Instance.Set<int>("playerLife", playerLife - 10);
+    }
 
 }
