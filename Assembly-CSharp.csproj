@@ -54,7 +54,10 @@
      <Compile Include="Assets\scripts\Rx\TestObserver.cs" />
      <Compile Include="Assets\scripts\Rx\TestStore.cs" />
      <Compile Include="Assets\scripts\Stores\PlayerStore.cs" />
+     <Compile Include="Assets\scripts\Stores\TileStore.cs" />
      <Compile Include="Assets\scripts\game\Enemy.cs" />
+     <Compile Include="Assets\scripts\game\IlumEntity.cs" />
+     <Compile Include="Assets\scripts\game\MapMaker.cs" />
      <Compile Include="Assets\scripts\game\Player.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
