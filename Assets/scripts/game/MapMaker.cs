@@ -5,6 +5,7 @@ using UnityEngine;
 public class MapMaker : MonoBehaviour {
 
 	private List<GameObject> tiles = new List<GameObject>();
+	private List<GameObject> borderTiles = new List<GameObject>();
 	private Vector2 topLeft;
 	private Vector2 topRight;
 	private Vector2 bottomLeft;
@@ -14,22 +15,29 @@ public class MapMaker : MonoBehaviour {
 
 	private GameObject player;
 	private GameObject camera;
+	private Sprite[] textures;
+	private int yCount;
+	private int xCount;
+	private GameObject simpleTilePrefab;
+
+	private Vector2 mapMax;
+	private Vector2 mapMin;
 	
 	void Start() {
-		Sprite[] textures = Resources.LoadAll<Sprite>("Sprites/TileMaps/SimpleTiles");
+		textures = Resources.LoadAll<Sprite>("Sprites/TileMaps/SimpleTiles");
 		// var screenHeight = Screen.height;
 		// var screenWidth = Screen.width;
 		var screenHeight = 2*Camera.main.orthographicSize;
   		var screenWidth = screenHeight*Camera.main.aspect;
 
-		var simpleTilePrefab = Resources.Load("Prefabs/SimpleTiles") as GameObject;
+		simpleTilePrefab = Resources.Load("Prefabs/SimpleTiles") as GameObject;
 		//RectTransform rt = (RectTransform)simpleTilePrefab.transform;
  
 		var renderer = simpleTilePrefab.GetComponent<Renderer>();
 		tileWidth = renderer.bounds.max.x - renderer.bounds.min.x;
 		tileHeight = renderer.bounds.max.y - renderer.bounds.min.y;
-		var yCount = (int)(screenHeight / tileHeight) + 2;
-		var xCount = (int)(screenWidth / tileWidth) + 2;
+		yCount = (int)(screenHeight / tileHeight) + 2;
+		xCount = (int)(screenWidth / tileWidth) + 2;
 
 		for (int i = 0; i < yCount * xCount; i++) {
 			var tile = Instantiate(simpleTilePrefab);
@@ -43,25 +51,27 @@ public class MapMaker : MonoBehaviour {
 
 		for (int row = 0; row < yCount; row ++) {
 			for (int col = 0; col < xCount; col++) {
-				var rnd = (int)Random.Range(0, 10);
-				Sprite txtr = null;
-				if (rnd == 1) txtr = textures[3];
-				else if (rnd == 2) txtr = textures[2];
-				else txtr = textures[(int)Random.Range(0, 1)];
-				simpleTilePrefab.GetComponent<SpriteRenderer>().sprite = txtr;
-				Instantiate(simpleTilePrefab, new Vector3((topLeft.x - tileWidth / 2) + tileWidth * col, (topLeft.y + tileHeight / 2) - tileHeight * row, 1), Quaternion.identity);
+				
+				simpleTilePrefab.GetComponent<SpriteRenderer>().sprite = GetRandomTexture();
+				var tile = Instantiate(simpleTilePrefab, new Vector3((topLeft.x - tileWidth / 2) + tileWidth * col, (topLeft.y + tileHeight / 2) - tileHeight * row, 1), Quaternion.identity);
+				tiles.Add(tile);
+				if (row == 0 && col == xCount - 1) {
+					mapMax = new Vector3((topLeft.x - tileWidth / 2) + tileWidth * col, (topLeft.y + tileHeight / 2) - tileHeight * row, 1);
+				}
+				if (row == yCount - 1 && col == 0) {
+					mapMin = new Vector3((topLeft.x - tileWidth / 2) + tileWidth * col, (topLeft.y + tileHeight / 2) - tileHeight * row, 1);
+				}
 			}
 		}
 	}
 
-	void ReplaceTile(Vector2 newPostion) {
-		for (int i = 0; i < tiles.Count; i++) {
-			if (!tiles[i].activeInHierarchy) {
-				tiles[i].transform.position = new Vector3(newPostion.x, newPostion.y, 1);
-				tiles[i].transform.rotation = Quaternion.identity;
-				tiles[i].SetActive(true);
-			}
-		}
+	Sprite GetRandomTexture() {
+		var rnd = (int)Random.Range(0, 10);
+		Sprite txtr = null;
+		if (rnd == 1) txtr = textures[3];
+		else if (rnd == 2) txtr = textures[2];
+		else txtr = textures[(int)Random.Range(0, 1)];
+		return txtr;
 	}
 
 	void CalculateEdges() {
@@ -71,8 +81,29 @@ public class MapMaker : MonoBehaviour {
 		bottomRight = Camera.main.ViewportToWorldPoint(new Vector2(1, 0));
 	}
 
+	void PlaceTile(Vector2 newPostion) {
+		for (int i = 0; i < tiles.Count; i++) {
+			if (!tiles[i].activeInHierarchy) {
+				tiles[i].transform.position = new Vector3(newPostion.x, newPostion.y, 1);
+				tiles[i].transform.rotation = Quaternion.identity;
+				tiles[i].GetComponent<SpriteRenderer>().sprite = GetRandomTexture();
+				tiles[i].SetActive(true);
+				break;
+			}
+		}
+	}
+
 	void Update() {
 		CalculateEdges();
+
+		if (mapMax.y - tileHeight / 2 < topRight.y) {
+			for (int col = 0; col < xCount; col++) {
+				var newPosition = new Vector2(mapMin.x + tileWidth * col, (mapMax.y - tileHeight / 2) + tileHeight / 2);
+				PlaceTile(newPosition);
+			}
+			mapMax.y += tileHeight;
+		}
+
 
 		// if (player.transform.position.x < topLeft.x + tileWidth * 4 || player.transform.position.x > topRight.x - tileWidth * 4 ||
 		// 	player.transform.position.y > topLeft.y - tileWidth * 4 || player.transform.position.y < bottomLeft.y + tileWidth * 4)
