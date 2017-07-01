@@ -9,8 +9,11 @@ public class MapMaker : MonoBehaviour {
 	private Vector2 topRight;
 	private Vector2 bottomLeft;
 	private Vector2 bottomRight;
+	private float tileWidth;
+	private float tileHeight;
 
-
+	private GameObject player;
+	private GameObject camera;
 	
 	void Start() {
 		Sprite[] textures = Resources.LoadAll<Sprite>("Sprites/TileMaps/SimpleTiles");
@@ -23,15 +26,20 @@ public class MapMaker : MonoBehaviour {
 		//RectTransform rt = (RectTransform)simpleTilePrefab.transform;
  
 		var renderer = simpleTilePrefab.GetComponent<Renderer>();
-		float tileWidth = renderer.bounds.max.x - renderer.bounds.min.x;
-		float tileHeight = renderer.bounds.max.y - renderer.bounds.min.y;
+		tileWidth = renderer.bounds.max.x - renderer.bounds.min.x;
+		tileHeight = renderer.bounds.max.y - renderer.bounds.min.y;
 		var yCount = (int)(screenHeight / tileHeight) + 2;
 		var xCount = (int)(screenWidth / tileWidth) + 2;
 
-		topLeft = Camera.main.ViewportToWorldPoint(new Vector2(0, 1));
-		topRight = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));
-		bottomLeft = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));
-		bottomRight = Camera.main.ViewportToWorldPoint(new Vector2(1, 0));
+		for (int i = 0; i < yCount * xCount; i++) {
+			var tile = Instantiate(simpleTilePrefab);
+			tile.SetActive(false);
+			tiles.Add(tile);
+		}
+
+		CalculateEdges();
+		player = GameObject.FindGameObjectWithTag("Player");
+		camera = GameObject.FindGameObjectWithTag("MainCamera");
 
 		for (int row = 0; row < yCount; row ++) {
 			for (int col = 0; col < xCount; col++) {
@@ -46,12 +54,31 @@ public class MapMaker : MonoBehaviour {
 		}
 	}
 
-	void something() {
-		Vector3 pos = Camera.main.WorldToViewportPoint(transform.position);
- 
-		if(pos.x < 0.0) Debug.Log("I am left of the camera's view.");
-		if(1.0 < pos.x) Debug.Log("I am right of the camera's view.");
-		if(pos.y < 0.0) Debug.Log("I am below the camera's view.");
-		if(1.0 < pos.y) Debug.Log("I am above the camera's view.");
+	void ReplaceTile(Vector2 newPostion) {
+		for (int i = 0; i < tiles.Count; i++) {
+			if (!tiles[i].activeInHierarchy) {
+				tiles[i].transform.position = new Vector3(newPostion.x, newPostion.y, 1);
+				tiles[i].transform.rotation = Quaternion.identity;
+				tiles[i].SetActive(true);
+			}
+		}
+	}
+
+	void CalculateEdges() {
+		topLeft = Camera.main.ViewportToWorldPoint(new Vector2(0, 1));
+		topRight = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));
+		bottomLeft = Camera.main.ViewportToWorldPoint(new Vector2(0, 0));
+		bottomRight = Camera.main.ViewportToWorldPoint(new Vector2(1, 0));
+	}
+
+	void Update() {
+		CalculateEdges();
+
+		// if (player.transform.position.x < topLeft.x + tileWidth * 4 || player.transform.position.x > topRight.x - tileWidth * 4 ||
+		// 	player.transform.position.y > topLeft.y - tileWidth * 4 || player.transform.position.y < bottomLeft.y + tileWidth * 4)
+		// 	camera.transform.position = Vector3.Lerp(camera.transform.position, new Vector3(player.transform.position.x, player.transform.position.y, -10), Time.deltaTime * 2f);
+		camera.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -10);
+		
+			
 	}
 }

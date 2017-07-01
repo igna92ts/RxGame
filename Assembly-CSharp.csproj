@@ -59,6 +59,7 @@
      <Compile Include="Assets\scripts\game\IlumEntity.cs" />
      <Compile Include="Assets\scripts\game\MapMaker.cs" />
      <Compile Include="Assets\scripts\game\Player.cs" />
+     <Compile Include="Assets\scripts\game\Tile.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
