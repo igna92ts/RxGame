@@ -39,7 +39,7 @@ public class MapMaker : MonoBehaviour {
 		yCount = (int)(screenHeight / tileHeight) + 2;
 		xCount = (int)(screenWidth / tileWidth) + 2;
 
-		for (int i = 0; i < yCount * xCount; i++) {
+		for (int i = 0; i < yCount * xCount * 2; i++) {
 			var tile = Instantiate(simpleTilePrefab);
 			tile.SetActive(false);
 			tiles.Add(tile);
@@ -95,14 +95,51 @@ public class MapMaker : MonoBehaviour {
 
 	void Update() {
 		CalculateEdges();
-
+		// UP
 		if (mapMax.y - tileHeight / 2 < topRight.y) {
-			for (int col = 0; col < xCount; col++) {
-				var newPosition = new Vector2(mapMin.x + tileWidth * col, (mapMax.y - tileHeight / 2) + tileHeight / 2);
+			for (int col = 0; col < xCount + 1; col++) {
+				var newPosition = new Vector2(mapMin.x + tileWidth * col, mapMax.y);
 				PlaceTile(newPosition);
 			}
 			mapMax.y += tileHeight;
 		}
+		if (mapMax.y - tileHeight / 2 - tileHeight > topRight.y) {
+			mapMax.y -= tileHeight;
+		}
+		// DOWN
+		if (mapMin.y + tileHeight / 2 > bottomLeft.y) {
+			for (int col = 0; col < xCount + 1; col++) {
+				var newPosition = new Vector2(mapMin.x + tileWidth * col, mapMin.y);
+				PlaceTile(newPosition);
+			}
+			mapMin.y -= tileHeight;
+		}
+		if (mapMin.y + tileHeight / 2 + tileHeight < bottomLeft.y) {
+			mapMin.y += tileHeight;
+		}
+		// RIGHT
+		if (mapMax.x - tileWidth / 2 < topRight.x) {
+			for (int row = 0; row < yCount; row ++) {
+				var newPosition = new Vector2(mapMax.x , mapMin.y + tileWidth * row + tileWidth);
+				PlaceTile(newPosition);
+			}
+			mapMax.x += tileWidth;
+		}
+		if (mapMax.x - tileHeight / 2 - tileWidth > topRight.x) {
+			mapMax.x -= tileWidth;
+		}
+		// // LEFT
+		if (mapMin.x + tileWidth / 2 > bottomLeft.x) {
+			for (int row = 0; row < yCount; row ++) {
+				var newPosition = new Vector2(mapMin.x , mapMin.y + tileWidth * row + tileWidth);
+				PlaceTile(newPosition);
+			}
+			mapMin.x -= tileWidth;
+		}
+		if (mapMin.x + tileHeight / 2 + tileWidth < bottomLeft.x) {
+			mapMin.x += tileWidth;
+		}
+		
 
 
 		// if (player.transform.position.x < topLeft.x + tileWidth * 4 || player.transform.position.x > topRight.x - tileWidth * 4 ||

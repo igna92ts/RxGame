@@ -10,6 +10,7 @@ public class Player : Observer {
 	private SpriteRenderer renderer;
    	private float _nextUse = 0.0f;
 	private bool readyToRoll = false;
+	private bool hitRecently = false;
 	
 	public bool IsCooldownDone{
 		get{
@@ -134,8 +135,26 @@ public class Player : Observer {
 		this.transform.position = Vector2.MoveTowards(transform.position, newVec, 3.5f * Time.deltaTime);
 	}
 
-	void OnCollisionEnter2D(Collision2D coll) {
-        PlayerStore.Instance.Set<int>("playerLife", playerLife - 10);
+	void OnCollisionStay2D(Collision2D coll) {
+		if(!hitRecently) {
+			PlayerStore.Instance.Set<int>("playerLife", playerLife - 10);
+			StartCoroutine("CollideFlash");
+		}
     }
+
+	IEnumerator CollideFlash() {
+		var renderer = this.GetComponent<SpriteRenderer>();
+		hitRecently = true;
+		renderer.color = Color.red;
+		yield return new WaitForSeconds(0.1f);
+		renderer.color = Color.white;
+		for (int i = 0; i < 3; i++) {
+			renderer.enabled = false;
+			yield return new WaitForSeconds(.2f);
+			renderer.enabled = true;
+			yield return new WaitForSeconds(.2f);
+		}           
+		hitRecently = false;
+	}
 
 }

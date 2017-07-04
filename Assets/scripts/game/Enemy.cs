@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : Observer {
 
 	// Use this for initialization
 	Player player;
@@ -10,6 +10,8 @@ public class Enemy : MonoBehaviour {
 	private Vector2 knockBackVec;
 	private bool knockBack = false;
 	private Animator anim;
+	private int monsterLife = 20;
+	[Observing("PlayerStore")] int playerScore;
 	void Start () {
 		player = GameObject.FindObjectOfType<Player>();
 		renderer = this.GetComponent<SpriteRenderer>();
@@ -48,7 +50,12 @@ public class Enemy : MonoBehaviour {
 			this.knockBack = true;
 			this.knockBackVec = (this.transform.position - coll.gameObject.transform.position);
 			this.knockBackVec.Normalize();
-			
+			this.monsterLife -= 10;
+
+			if (this.monsterLife <= 0) {
+				PlayerStore.Instance.Set<int>("playerScore", playerScore + 10);
+				Destroy(this.gameObject);
+			}
 		}
     }
 }
