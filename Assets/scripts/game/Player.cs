@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using uni
 
 public class Player : Observer {
 
@@ -62,7 +63,7 @@ public class Player : Observer {
 			anim.Play("Idle");
 		} 
 
-		if(Input.GetKey(KeyCode.W)) {
+		if(Input.GetKey(KeyCode.W) || CrossPlatformInputManager) {
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x, transform.position.y + 0.1f), 2 * Time.deltaTime);
 		} else if (Input.GetKey(KeyCode.S)) {
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x, transform.position.y - 0.1f), 2 * Time.deltaTime);
@@ -70,10 +71,8 @@ public class Player : Observer {
 
 		if (Input.GetKey(KeyCode.A)) {
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x - 0.1f, transform.position.y), 2 * Time.deltaTime);
-			// renderer.flipX = true;
 			transform.localScale = new Vector3(-1, 1, 1);
 		} else if (Input.GetKey(KeyCode.D)) {
-			// renderer.flipX = false;
 			transform.localScale = new Vector3(1, 1, 1);
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x + 0.1f, transform.position.y), 2 * Time.deltaTime);
 		}

@@ -6,10 +6,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{7B8B6CAE-CF1E-5F8A-8609-2853B23A7181}</ProjectGuid>
+    <ProjectGuid>{242F5D2F-F33F-7CB1-DC43-13D7EA777008}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>Assets</BaseDirectory>
@@ -46,21 +46,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\scripts\Rx\Attributes\Observable.cs" />
-     <Compile Include="Assets\scripts\Rx\Attributes\Observing.cs" />
-     <Compile Include="Assets\scripts\Rx\Core Rx\BaseStore.cs" />
-     <Compile Include="Assets\scripts\Rx\Core Rx\ObservableStore.cs" />
-     <Compile Include="Assets\scripts\Rx\Core Rx\Observer.cs" />
-     <Compile Include="Assets\scripts\Rx\TestObserver.cs" />
-     <Compile Include="Assets\scripts\Rx\TestStore.cs" />
-     <Compile Include="Assets\scripts\Screens\GameUI.cs" />
-     <Compile Include="Assets\scripts\Stores\PlayerStore.cs" />
-     <Compile Include="Assets\scripts\Stores\TileStore.cs" />
-     <Compile Include="Assets\scripts\game\Enemy.cs" />
-     <Compile Include="Assets\scripts\game\IlumEntity.cs" />
-     <Compile Include="Assets\scripts\game\MapMaker.cs" />
-     <Compile Include="Assets\scripts\game\Player.cs" />
-     <Compile Include="Assets\scripts\game\Tile.cs" />
+     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\AxisTouchButton.cs" />
+     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\ButtonHandler.cs" />
+     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\CrossPlatformInputManager.cs" />
+     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\InputAxisScrollbar.cs" />
+     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\Joystick.cs" />
+     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\MobileControlRig.cs" />
+     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\PlatformSpecific\MobileInput.cs" />
+     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\PlatformSpecific\StandaloneInput.cs" />
+     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\TiltInput.cs" />
+     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\TouchPad.cs" />
+     <Compile Include="Assets\Standard Assets\CrossPlatformInput\Scripts\VirtualInput.cs" />
      <None Include="Assets\Standard Assets\Fonts\OpenSans\License!.txt" />
      <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
  <Reference Include="UnityEngine.UI">
@@ -84,10 +80,6 @@
  <Reference Include="UnityEngine.VR">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
  </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{242F5D2F-F33F-7CB1-DC43-13D7EA777008}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
