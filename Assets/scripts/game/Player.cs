@@ -12,6 +12,7 @@ public class Player : Observer {
    	private float _nextUse = 0.0f;
 	private bool readyToRoll = false;
 	private bool hitRecently = false;
+	private float tapTimer = 0;
 	
 	public bool IsCooldownDone{
 		get{
@@ -32,12 +33,15 @@ public class Player : Observer {
 	
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetMouseButtonDown(0))
+			tapTimer += Time.deltaTime;
 
 		if(IsCooldownDone) {
 			readyToRoll = false;
-			if(Input.GetKeyDown(KeyCode.Space)) {
+			if(Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonUp(0) && tapTimer < .1f) {
+				tapTimer = 0;
 				anim.Play("Attack");
-				TriggerCooldown(0.1f);
+				TriggerCooldown(0.2f);
 			}
 			if(CheckRoll()) {
 				anim.Play("Roll");
@@ -65,23 +69,19 @@ public class Player : Observer {
 			anim.Play("Idle");
 		} 
 
-		if(Input.GetKey(KeyCode.W) || CrossPlatformInputManager.GetAxis("Vertical") > 0) {
+		if(Input.GetKey(KeyCode.W) || CrossPlatformInputManager.GetAxis("Vertical") > .2f) {
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x, transform.position.y + 0.1f), 2 * Time.deltaTime);
-		} else if (Input.GetKey(KeyCode.S) || CrossPlatformInputManager.GetAxis("Vertical") < 0) {
+		} else if (Input.GetKey(KeyCode.S) || CrossPlatformInputManager.GetAxis("Vertical") < -.2f) {
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x, transform.position.y - 0.1f), 2 * Time.deltaTime);
 		}
 
-		if (Input.GetKey(KeyCode.A) || CrossPlatformInputManager.GetAxis("Horizontal") < 0) {
+		if (Input.GetKey(KeyCode.A) || CrossPlatformInputManager.GetAxis("Horizontal") < -.2f) {
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x - 0.1f, transform.position.y), 2 * Time.deltaTime);
 			transform.localScale = new Vector3(-1, 1, 1);
-		} else if (Input.GetKey(KeyCode.D) || CrossPlatformInputManager.GetAxis("Horizontal") > 0) {
+		} else if (Input.GetKey(KeyCode.D) || CrossPlatformInputManager.GetAxis("Horizontal") > .2f) {
 			transform.localScale = new Vector3(1, 1, 1);
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x + 0.1f, transform.position.y), 2 * Time.deltaTime);
 		}
-
-		Debug.Log("HORIZONTAL:" + CrossPlatformInputManager.GetAxis("Horizontal"));
-		Debug.Log("vERTICAL:" + CrossPlatformInputManager.GetAxis("Vertical"));
-
 	}
 
  	private float lastTapTime = 0.0f;
@@ -140,7 +140,7 @@ public class Player : Observer {
 	}
 
 	void OnCollisionStay2D(Collision2D coll) {
-		if(!hitRecently) {
+		if(!hitRecently && coll.gameObject.tag == "Enemy") {
 			PlayerStore.Instance.Set<int>("playerLife", playerLife - 10);
 			StartCoroutine("CollideFlash");
 		}

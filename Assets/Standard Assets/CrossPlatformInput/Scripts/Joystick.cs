@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UnityStandardAssets.CrossPlatformInput
 {
@@ -34,11 +35,13 @@ namespace UnityStandardAssets.CrossPlatformInput
         {
             m_StartPos = transform.position;
         }
-
+		public GameObject gameScreen;
 		void Update() {
-			if (Input.GetMouseButtonDown(0)) {
-				m_StartPos = Input.mousePosition;
-				this.transform.position = Input.mousePosition;
+			if (Input.GetMouseButtonDown(0) && gameScreen.activeSelf) {
+				if(Input.mousePosition.y < Screen.height * .9f) {
+					m_StartPos = Input.mousePosition;
+					this.transform.position = Input.mousePosition;
+				}
 			}
 		}
 

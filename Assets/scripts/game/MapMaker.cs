@@ -120,8 +120,10 @@ public class MapMaker : MonoBehaviour {
 		// RIGHT
 		if (mapMax.x - tileWidth / 2 < topRight.x) {
 			for (int row = 0; row < yCount; row ++) {
-				var newPosition = new Vector2(mapMax.x , mapMin.y + tileWidth * row + tileWidth);
-				PlaceTile(newPosition);
+				if(!(mapMax.y - tileHeight / 2 < topRight.y && row == 0)) {
+					var newPosition = new Vector2(mapMax.x , mapMin.y + tileWidth * row + tileWidth);
+					PlaceTile(newPosition);
+				}
 			}
 			mapMax.x += tileWidth;
 		}
