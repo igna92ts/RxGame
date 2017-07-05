@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using uni
+using UnityStandardAssets.CrossPlatformInput;
 
 public class Player : Observer {
 
@@ -55,27 +55,32 @@ public class Player : Observer {
 	}
 
 	void Walk() {
-		if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D)) {
+		if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) ||
+		   Input.GetKey(KeyCode.D) || CrossPlatformInputManager.GetAxis("Horizontal") != 0 || CrossPlatformInputManager.GetAxis("Vertical") != 0) {
 			anim.Play("Walk");
 		}
 
-		if(!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D)) {
+		if(!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.S) &&
+		   !Input.GetKey(KeyCode.D) && CrossPlatformInputManager.GetAxis("Vertical") == 0 && CrossPlatformInputManager.GetAxis("Horizontal") == 0) {
 			anim.Play("Idle");
 		} 
 
-		if(Input.GetKey(KeyCode.W) || CrossPlatformInputManager) {
+		if(Input.GetKey(KeyCode.W) || CrossPlatformInputManager.GetAxis("Vertical") > 0) {
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x, transform.position.y + 0.1f), 2 * Time.deltaTime);
-		} else if (Input.GetKey(KeyCode.S)) {
+		} else if (Input.GetKey(KeyCode.S) || CrossPlatformInputManager.GetAxis("Vertical") < 0) {
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x, transform.position.y - 0.1f), 2 * Time.deltaTime);
 		}
 
-		if (Input.GetKey(KeyCode.A)) {
+		if (Input.GetKey(KeyCode.A) || CrossPlatformInputManager.GetAxis("Horizontal") < 0) {
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x - 0.1f, transform.position.y), 2 * Time.deltaTime);
 			transform.localScale = new Vector3(-1, 1, 1);
-		} else if (Input.GetKey(KeyCode.D)) {
+		} else if (Input.GetKey(KeyCode.D) || CrossPlatformInputManager.GetAxis("Horizontal") > 0) {
 			transform.localScale = new Vector3(1, 1, 1);
 			this.transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x + 0.1f, transform.position.y), 2 * Time.deltaTime);
 		}
+
+		Debug.Log("HORIZONTAL:" + CrossPlatformInputManager.GetAxis("Horizontal"));
+		Debug.Log("vERTICAL:" + CrossPlatformInputManager.GetAxis("Vertical"));
 
 	}
 

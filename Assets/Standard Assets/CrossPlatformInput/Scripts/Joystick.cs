@@ -35,6 +35,13 @@ namespace UnityStandardAssets.CrossPlatformInput
             m_StartPos = transform.position;
         }
 
+		void Update() {
+			if (Input.GetMouseButtonDown(0)) {
+				m_StartPos = Input.mousePosition;
+				this.transform.position = Input.mousePosition;
+			}
+		}
+
 		void UpdateVirtualAxes(Vector3 value)
 		{
 			var delta = m_StartPos - value;
