@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Rx;
 using UnityEngine;
 
 public class EnemyManager : Observer {
@@ -10,13 +11,27 @@ public class EnemyManager : Observer {
 	// Use this for initialization
 	void Start () {
 		// if(player == null)
-		GameObject.Instantiate(player);
+		player = GameObject.Instantiate(player);
 		var goo = Resources.Load("Prefabs/Enemies/Goo") as GameObject;
 		for (int i = 0; i < 100; i++) {
 			var enemy = Instantiate(goo);
 			enemy.SetActive(false);
 			enemies.Add(enemy);
 		}
+	}
+
+	void OnDisable() {
+		foreach(var enemy in enemies) {
+			if (enemy != null)
+				enemy.SetActive(false);
+		}
+		EnemyStore.Instance.Set<int>("maxEnemies", 5);
+		EnemyStore.Instance.Set<int>("currentEnemies", 0);
+		player.SetActive(false);
+	}
+
+	void OnEnable() {
+		player.SetActive(true);
 	}
 	
 	// Update is called once per frame

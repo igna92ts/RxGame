@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Rx;
 using UnityEngine;
 
 public class Heal : Consumable {

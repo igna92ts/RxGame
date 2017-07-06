@@ -36,8 +36,9 @@ namespace UnityStandardAssets.CrossPlatformInput
             m_StartPos = transform.position;
         }
 		public GameObject gameScreen;
+		public GameObject menu;
 		void Update() {
-			if (Input.GetMouseButtonDown(0) && gameScreen.activeSelf) {
+			if (Input.GetMouseButtonDown(0) && gameScreen.activeSelf && !menu.activeSelf) {
 				if(Input.mousePosition.y < Screen.height * .9f) {
 					m_StartPos = Input.mousePosition;
 					this.transform.position = Input.mousePosition;

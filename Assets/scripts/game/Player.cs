@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Rx;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
@@ -29,6 +30,11 @@ public class Player : Observer {
 	void Start () {
 		anim = this.GetComponent<Animator>();
 		renderer = this.GetComponent<SpriteRenderer>();
+	}
+
+	void OnDisable() {
+		PlayerStore.Instance.Set<int>("playerLife", 100);
+		PlayerStore.Instance.Set<int>("playerScore", 0);
 	}
 	
 	// Update is called once per frame

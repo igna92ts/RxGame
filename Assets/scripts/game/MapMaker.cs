@@ -65,6 +65,12 @@ public class MapMaker : MonoBehaviour {
 		}
 	}
 
+	void OnEnable() {
+		foreach(var tile in tiles) {
+			tile.GetComponent<SpriteRenderer>().sprite = GetRandomTexture();
+		}
+	}
+
 	Sprite GetRandomTexture() {
 		var rnd = (int)Random.Range(0, 10);
 		Sprite txtr = null;

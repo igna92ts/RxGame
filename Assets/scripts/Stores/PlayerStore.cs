@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Rx;
 using UnityEngine;
 
 class PlayerStore : BaseStore<PlayerStore> {

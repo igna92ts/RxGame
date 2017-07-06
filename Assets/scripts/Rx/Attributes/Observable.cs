@@ -1,6 +1,8 @@
 using System;
-[AttributeUsage(AttributeTargets.Field)]
-class Observable : Attribute
-{
-    
+namespace Rx {
+    [AttributeUsage(AttributeTargets.Field)]
+    class Observable : Attribute
+    {
+        
+    }
 }
