@@ -10,6 +10,6 @@ public class Heal : Consumable {
 
     public override void Activate()
     {
-       PlayerStore.Instance.Set<int>("playerLife", playerLife + 10);
+       PlayerStore.Instance.Set<int>("playerLife", playerLife + 1);
     }
 }

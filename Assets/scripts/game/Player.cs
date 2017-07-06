@@ -35,7 +35,7 @@ public class Player : Observer {
 	}
 
 	void OnDisable() {
-		PlayerStore.Instance.Set<int>("playerLife", 100);
+		PlayerStore.Instance.Set<int>("playerLife", 16);
 		PlayerStore.Instance.Set<int>("playerScore", 0);
 	}
 	
@@ -152,7 +152,7 @@ public class Player : Observer {
 	void OnCollisionStay2D(Collision2D coll) {
 		if(!pause && !gameLost) {
 			if(!hitRecently && coll.gameObject.tag == "Enemy") {
-				PlayerStore.Instance.Set<int>("playerLife", playerLife - 10);
+				PlayerStore.Instance.Set<int>("playerLife", playerLife - 1);
 				StartCoroutine("CollideFlash");
 			}
 		}
