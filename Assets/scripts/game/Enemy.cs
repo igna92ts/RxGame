@@ -14,6 +14,8 @@ public class Enemy : Observer {
 	private int monsterLife = 20;
 	private bool hitRecently = false;
 	[Observing("PlayerStore")] int playerScore;
+	[Observing("PlayerStore")] bool gameLost;
+	[Observing("PlayerStore")] bool pause;
 	void Start () {
 		player = GameObject.FindObjectOfType<Player>();
 		renderer = this.GetComponent<SpriteRenderer>();
@@ -40,12 +42,16 @@ public class Enemy : Observer {
 		// } else {
 			
 		// }
-		anim.Play("Walk Goo");
+		if(!gameLost && !pause) {
+			anim.Play("Walk Goo");
 			Move();
 
-		if (Vector2.Distance(this.transform.position, player.transform.position) > 20) {
-			this.gameObject.SetActive(false);
-			EnemyStore.Instance.Set<int>("currentEnemies", currentEnemies - 1);
+			if (Vector2.Distance(this.transform.position, player.transform.position) > 20) {
+				this.gameObject.SetActive(false);
+				EnemyStore.Instance.Set<int>("currentEnemies", currentEnemies - 1);
+			}
+		} else {
+			anim.Play("Idle");
 		}
 	}
 
@@ -62,23 +68,25 @@ public class Enemy : Observer {
 	[Observing("EnemyStore")] int currentEnemies;
 	[Observing("EnemyStore")] int maxEnemies;
 	void OnTriggerEnter2D(Collider2D coll) {
-        if (coll.gameObject.tag == "Weapon" && !hitRecently) {
-			this.knockBack = true;
-			// this.knockBackVec.Normalize();
-			// We then get the opposite (-Vector3) and normalize it
+		if(!gameLost && !pause) {
+			if (coll.gameObject.tag == "Weapon" && !hitRecently) {
+				this.knockBack = true;
+				// this.knockBackVec.Normalize();
+				// We then get the opposite (-Vector3) and normalize it
 
-			this.monsterLife -= 10;
-			var ps = GetComponentInChildren<ParticleSystem>();
-			ps.Emit(3);
-			StartCoroutine("Hit");
-			if (this.monsterLife <= 0) {
-				PlayerStore.Instance.Set<int>("playerScore", playerScore + 50);
- 				EnemyStore.Instance.Set<int>("currentEnemies", currentEnemies - 1);
-				knockBack = false;
-				if (playerScore / 100 > maxEnemies) {
-					EnemyStore.Instance.Set<int>("maxEnemies", maxEnemies + 1 );
+				this.monsterLife -= 10;
+				var ps = GetComponentInChildren<ParticleSystem>();
+				ps.Emit(3);
+				StartCoroutine("Hit");
+				if (this.monsterLife <= 0) {
+					PlayerStore.Instance.Set<int>("playerScore", playerScore + 50);
+					EnemyStore.Instance.Set<int>("currentEnemies", currentEnemies - 1);
+					knockBack = false;
+					if (playerScore / 100 > maxEnemies) {
+						EnemyStore.Instance.Set<int>("maxEnemies", maxEnemies + 1 );
+					}
+					this.gameObject.SetActive(false);
 				}
-				this.gameObject.SetActive(false);
 			}
 		}
     }

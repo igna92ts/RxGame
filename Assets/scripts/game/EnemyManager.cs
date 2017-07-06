@@ -27,7 +27,8 @@ public class EnemyManager : Observer {
 		}
 		EnemyStore.Instance.Set<int>("maxEnemies", 5);
 		EnemyStore.Instance.Set<int>("currentEnemies", 0);
-		player.SetActive(false);
+		if(player != null)
+			player.SetActive(false);
 	}
 
 	void OnEnable() {

@@ -7,6 +7,8 @@ using UnityStandardAssets.CrossPlatformInput;
 public class Player : Observer {
 
 	[Observing("PlayerStore")] int playerLife;
+	[Observing("PlayerStore")] bool gameLost;
+	[Observing("PlayerStore")] bool pause;
 
 	private Animator anim;
 	private SpriteRenderer renderer;
@@ -39,26 +41,28 @@ public class Player : Observer {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetMouseButtonDown(0))
-			tapTimer += Time.deltaTime;
+		if(!pause && !gameLost) {
+			if (Input.GetMouseButtonDown(0))
+				tapTimer += Time.deltaTime;
 
-		if(IsCooldownDone) {
-			readyToRoll = false;
-			if(Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonUp(0) && tapTimer < .1f) {
-				tapTimer = 0;
-				anim.Play("Attack");
-				TriggerCooldown(0.2f);
+			if(IsCooldownDone) {
+				readyToRoll = false;
+				if(Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonUp(0) && tapTimer < .1f) {
+					tapTimer = 0;
+					anim.Play("Attack");
+					TriggerCooldown(0.2f);
+				}
+				if(CheckRoll()) {
+					anim.Play("Roll");
+					readyToRoll = true;
+					TriggerCooldown(0.7f);
+				} else
+					Walk();
 			}
-			if(CheckRoll()) {
-				anim.Play("Roll");
-				readyToRoll = true;
-				TriggerCooldown(0.7f);
-			} else
-				Walk();
-		}
 
-		if (readyToRoll) {
-			Roll();
+			if (readyToRoll) {
+				Roll();
+			}
 		}
 
 		// Walk();
@@ -146,9 +150,11 @@ public class Player : Observer {
 	}
 
 	void OnCollisionStay2D(Collision2D coll) {
-		if(!hitRecently && coll.gameObject.tag == "Enemy") {
-			PlayerStore.Instance.Set<int>("playerLife", playerLife - 10);
-			StartCoroutine("CollideFlash");
+		if(!pause && !gameLost) {
+			if(!hitRecently && coll.gameObject.tag == "Enemy") {
+				PlayerStore.Instance.Set<int>("playerLife", playerLife - 10);
+				StartCoroutine("CollideFlash");
+			}
 		}
     }
 
