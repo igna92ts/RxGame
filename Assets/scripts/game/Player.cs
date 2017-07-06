@@ -9,6 +9,7 @@ public class Player : Observer {
 	[Observing("PlayerStore")] int playerLife;
 	[Observing("PlayerStore")] bool gameLost;
 	[Observing("PlayerStore")] bool pause;
+	[Observing("PlayerStore")] int strMulti;
 
 	private Animator anim;
 	private SpriteRenderer renderer;
@@ -16,6 +17,9 @@ public class Player : Observer {
 	private bool readyToRoll = false;
 	private bool hitRecently = false;
 	private float tapTimer = 0;
+	private float strUpTimer = 0;
+
+	public GameObject strUpIcon;
 	
 	public bool IsCooldownDone{
 		get{
@@ -58,6 +62,16 @@ public class Player : Observer {
 					TriggerCooldown(0.7f);
 				} else
 					Walk();
+			}
+
+			if (strMulti > 1) {
+				strUpIcon.SetActive(true);
+				strUpTimer += Time.deltaTime;
+				if (strUpTimer > 10) {
+					strUpTimer = 0;
+					PlayerStore.Instance.Set<int>("strMulti", 1);
+					strUpIcon.SetActive(false);
+				}
 			}
 
 			if (readyToRoll) {
@@ -159,6 +173,21 @@ public class Player : Observer {
     }
 
 	IEnumerator CollideFlash() {
+		var renderer = this.GetComponent<SpriteRenderer>();
+		hitRecently = true;
+		renderer.color = Color.red;
+		yield return new WaitForSeconds(0.1f);
+		renderer.color = Color.white;
+		for (int i = 0; i < 3; i++) {
+			renderer.enabled = false;
+			yield return new WaitForSeconds(.2f);
+			renderer.enabled = true;
+			yield return new WaitForSeconds(.2f);
+		}           
+		hitRecently = false;
+	}
+
+	IEnumerator ShowStrUp() {
 		var renderer = this.GetComponent<SpriteRenderer>();
 		hitRecently = true;
 		renderer.color = Color.red;

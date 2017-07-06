@@ -67,6 +67,7 @@ public class Enemy : Observer {
 
 	[Observing("EnemyStore")] int currentEnemies;
 	[Observing("EnemyStore")] int maxEnemies;
+	[Observing("PlayerStore")] int strMulti;
 	void OnTriggerEnter2D(Collider2D coll) {
 		if(!gameLost && !pause) {
 			if (coll.gameObject.tag == "Weapon" && !hitRecently) {
@@ -74,7 +75,7 @@ public class Enemy : Observer {
 				// this.knockBackVec.Normalize();
 				// We then get the opposite (-Vector3) and normalize it
 
-				this.monsterLife -= 10;
+				this.monsterLife -= 10 * strMulti;
 				var ps = GetComponentInChildren<ParticleSystem>();
 				ps.Emit(3);
 				StartCoroutine("Hit");
@@ -82,9 +83,10 @@ public class Enemy : Observer {
 					PlayerStore.Instance.Set<int>("playerScore", playerScore + 50);
 					EnemyStore.Instance.Set<int>("currentEnemies", currentEnemies - 1);
 					knockBack = false;
-					if (playerScore / 100 > maxEnemies) {
+					if (playerScore / 50 > maxEnemies) {
 						EnemyStore.Instance.Set<int>("maxEnemies", maxEnemies + 1 );
 					}
+					ConsumableManager.Instance.Drop(this.transform.position);
 					this.gameObject.SetActive(false);
 				}
 			}

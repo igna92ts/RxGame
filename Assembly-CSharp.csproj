@@ -57,7 +57,10 @@
      <Compile Include="Assets\scripts\Stores\GameStateStore.cs" />
      <Compile Include="Assets\scripts\Stores\PlayerStore.cs" />
      <Compile Include="Assets\scripts\game\Consumables\Consumable.cs" />
+     <Compile Include="Assets\scripts\game\Consumables\ConsumableManager.cs" />
      <Compile Include="Assets\scripts\game\Consumables\Heal.cs" />
+     <Compile Include="Assets\scripts\game\Consumables\LifeUp.cs" />
+     <Compile Include="Assets\scripts\game\Consumables\StrengthUp.cs" />
      <Compile Include="Assets\scripts\game\Enemy.cs" />
      <Compile Include="Assets\scripts\game\EnemyManager.cs" />
      <Compile Include="Assets\scripts\game\GameManager.cs" />
